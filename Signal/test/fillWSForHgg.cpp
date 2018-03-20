@@ -112,6 +112,7 @@ options_description desc("Allowed options");
   vars.add(weight);
   vars.add(IntLumi);
   vars.add(dZ);
+  RooFormulaVar hgg_mass( "CMS_hgg_mass", "Mgg", vars );
 
   //INITIAL SELECTION
   string treeSel = "MX >250. && MX<294 && Mjj> 85 && Mjj<141";
@@ -170,9 +171,12 @@ options_description desc("Allowed options");
   vector<RooDataSet > datasets_hig;
   it = mapOfProcesses.begin();
   while(it != mapOfProcesses.end()){
-    datasets_hig.push_back(RooDataSet(Form("bg_%s_125_13TeV_%s", it->first.c_str(),regionSaveName.c_str() ),it->first.c_str(),vars,WeightVar(weight), Import(*trees_hig[it->first])) );
+    RooDataSet dataset = RooDataSet(Form("bg_%s_125_13TeV_%s", it->first.c_str(),regionSaveName.c_str() ),it->first.c_str(),vars,WeightVar(weight), Import(*trees_hig[it->first]));
+    ((RooRealVar*)dataset.addColumn( hgg_mass))->setRange(100.,180.); 
+    datasets_hig.push_back(dataset);
     it++;
   }
+
 
 
   dataFile->cd();
