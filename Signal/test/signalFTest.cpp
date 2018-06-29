@@ -214,7 +214,7 @@ int main(int argc, char *argv[]){
   
   // open input files using WS wrapper.
 	WSTFileWrapper *inWS 
-    = new WSTFileWrapper(filename_,"tagsDumper/cms_hgg_13TeV");
+    = new WSTFileWrapper(filename_,"ws_sig");
   if(verbose_) std::cout << "[INFO] Opened files OK!" << std::endl;
 	RooRealVar *mass = (RooRealVar*)inWS->var("CMS_hgg_mass");
   if(verbose_) std::cout << "[INFO] Got mass variable " << mass << std::endl;
@@ -424,8 +424,8 @@ int main(int argc, char *argv[]){
 				chi2 = 2.*(prevNll-thisNll);
 				
         // alternative, simpler chi2... but assumed high stats?
-        float chi2_bis= (plotsRV[proc][cat])->chiSquare();
-        
+				//        float chi2_bis= (plotsRV[proc][cat])->chiSquare();
+				float chi2_bis= (plotsRV[proc][cat])->chiSquare(2*order+(order-1));
         // plot this order
 				pdf->plotOn(plotsRV[proc][cat],LineColor(colors[order-1]));
 
@@ -434,6 +434,8 @@ int main(int argc, char *argv[]){
 				//int diffInDof = (order- prev_order);
 				//prob = TMath::Prob(chi2,diffInDof);
 				float prob_old = TMath::Prob(chi2,diffInDof);
+
+				//				prob = TMath::Prob(chi2_bis,2*order+(order-1));
 				prob = TMath::Prob(chi2_bis,2*order+(order-1));
 
 				//Wilk's theorem

@@ -68,6 +68,7 @@ string massesToSkip_;
 vector<int> skipMasses_;
 string massListStr_;
 vector<int> massList_;
+//FIXMEEEEEEE
 bool splitRVWV_=true;
 bool doSecondaryModels_=false;
 bool useSSF_=false;
@@ -130,8 +131,8 @@ void OptionParser(int argc, char *argv[]){
 		("infilename,i", po::value<string>(&filenameStr_),                                           			"Input file name")
 		("outfilename,o", po::value<string>(&outfilename_)->default_value("CMS-HGG_sigfit.root"), 			"Output file name")
 		("merge,m", po::value<string>(&mergefilename_)->default_value(""),                               	        "Merge the output with the given workspace")
-		("datfilename,d", po::value<string>(&datfilename_)->default_value("dat/newConfig.dat"),      			"Configuration file")
-		("systfilename,s", po::value<string>(&systfilename_)->default_value("dat/photonCatSyst.dat"),		"Systematic model numbers")
+		("datfilename,d", po::value<string>(&datfilename_)->default_value(""),      			"Configuration file")
+		("systfilename,s", po::value<string>(&systfilename_)->default_value(""),		"Systematic model numbers")
 		("plotDir,p", po::value<string>(&plotDir_)->default_value("plots"),						"Put plots in this directory")
 		("skipPlots", 																																									"Do not make any plots")
 		("mhLow,L", po::value<int>(&mhLow_)->default_value(115),                                  			"Low mass point")
@@ -437,6 +438,7 @@ int main(int argc, char *argv[]){
 	gROOT->SetBatch();
 
 	OptionParser(argc,argv);
+	std::cout<<"------is Running only initialFits:"<<runInitialFitsOnly_<<std::endl;
 
 	TStopwatch sw;
 	sw.Start();
@@ -444,11 +446,14 @@ int main(int argc, char *argv[]){
   // reference details for low stats cats
   // need to make this configurable ?! -LC
   //referenceProc_="ggh";
-  referenceProc_="GG2H";
+	//  referenceProc_="GG2H";
+  referenceProc_="HHbbgg";
   //referenceProcTTH_="tth";
   referenceProcTTH_="TTH";
-  referenceTagWV_="UntaggedTag_2"; // histest stats WV is ggh Untagged 3. 
-  referenceTagRV_="UntaggedTag_2"; // fairly low resolution tag even for ggh, more approprioate as te default than re-using the original tag.
+  // referenceTagWV_="UntaggedTag_2"; // histest stats WV is ggh Untagged 3. 
+ referenceTagWV_="test";
+  //  referenceTagRV_="UntaggedTag_2"; // fairly low resolution tag even for ggh, more approprioate as te default than re-using the original tag.
+  referenceTagRV_="test"; // fairly low resolution tag even for ggh, more approprioate as te default than re-using the original tag.
   // are WV which needs to borrow should be taken from here
   
   // isFlashgg should now be the only option.
@@ -477,7 +482,7 @@ int main(int argc, char *argv[]){
   // extract nEvents per proc/tag etc...
 	if (checkYields_){
 	  
-    WSTFileWrapper * inWS0 = new WSTFileWrapper(filenameStr_,"tagsDumper/cms_hgg_13TeV");
+    WSTFileWrapper * inWS0 = new WSTFileWrapper(filenameStr_,"ws_sig");
 		std::list<RooAbsData*> data =  (inWS0->allData()) ;
 		for (std::list<RooAbsData*>::const_iterator iterator = data.begin(), end = data.end();
       iterator != end;
@@ -493,7 +498,7 @@ int main(int argc, char *argv[]){
   //time to open the signal file for the main script!
 	WSTFileWrapper *inWS;
 	if (isFlashgg_){
-    inWS = new WSTFileWrapper(filenameStr_,"tagsDumper/cms_hgg_13TeV");
+    inWS = new WSTFileWrapper(filenameStr_,"ws_sig");
 		std::list<RooAbsData*> test =  (inWS->allData()) ;
 		if (verbose_) {
 			std::cout << " [INFO] WS contains " << std::endl;

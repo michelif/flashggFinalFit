@@ -243,6 +243,8 @@ void FinalModelConstruction::printSignalSystematics(){
 
 // does what it says in the name: loads the values of the systematics from the dat file
 void FinalModelConstruction::loadSignalSystematics(string filename){
+
+  if(filename.empty()) return;
 	
   //define these now for later use
   int diphotonCat=-1;

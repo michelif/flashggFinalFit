@@ -115,7 +115,7 @@ options_description desc("Allowed options");
   RooFormulaVar hgg_mass( "CMS_hgg_mass", "Mgg", vars );
 
   //INITIAL SELECTION
-  string treeSel = "MX >250. && MX<294 && Mjj> 85 && Mjj<141";
+  string treeSel = "MX >200. && Mjj> 60 && Mjj<200";
   //  TFile* dataFile = new TFile(  Form("%s.root",outFileName.c_str()) , "RECREATE" );
   RooWorkspace ws_sig ("ws_sig");
   RooWorkspace ws_bkg  ("ws_bkg");
@@ -166,7 +166,9 @@ options_description desc("Allowed options");
 
   string regionSaveName = "test";
   RooDataSet data_ds(Form("data_125_13TeV_%s", regionSaveName.c_str() ), "Data", vars, WeightVar(weight), Import(*tree_data) );
+  ((RooRealVar*)data_ds.addColumn( hgg_mass))->setRange(100.,180.);
   RooDataSet sig_ds(Form("HHbbgg_125_13TeV_%s", regionSaveName.c_str() ), "HHbbgg", vars, WeightVar(weight), Import(*tree_sig) );
+  ((RooRealVar*)sig_ds.addColumn( hgg_mass))->setRange(100.,180.);
 
   vector<RooDataSet > datasets_hig;
   it = mapOfProcesses.begin();
@@ -180,6 +182,10 @@ options_description desc("Allowed options");
 
 
   dataFile->cd();
+  ws_data.import(data_ds);
+  ws_data.Write();
+
+
   ws_sig.import(sig_ds);
   ws_sig.Write();
   
